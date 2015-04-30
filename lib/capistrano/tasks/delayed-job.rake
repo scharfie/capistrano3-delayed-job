@@ -41,13 +41,8 @@ namespace :delayed_job do
 
   desc 'Restart the delayed_job process'
   task :restart do
-    on roles(delayed_job_roles) do
-      within release_path do
-        with rails_env: fetch(:rails_env) do
-          execute :bundle, :exec, delayed_job_bin, delayed_job_args, :restart
-        end
-      end
-    end
+    invoke 'delayed_job:stop'
+    invoke 'delayed_job:start'
   end
 
   after 'deploy:published', 'restart' do
